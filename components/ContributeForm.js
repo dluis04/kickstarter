@@ -8,13 +8,17 @@ import { Router } from '../routes';
 class ContributeForm extends Component {
 
     state = {
-        value: ''
+        value: '',
+        errorMessage: '',
+        loading: false
     };
 
     onSubmit = async (event) => {
         event.preventDefault();
 
         const campaign = Campaign(this.props.address);
+
+        this.setState({loading: true});
 
         try {
 
@@ -26,26 +30,27 @@ class ContributeForm extends Component {
                     value: web3.utils.toWei(this.state.value, 'ether')
                 });
 
-                Router.replaceRoute(`/campaigns/${this.props.address}`)
+            Router.replaceRoute(`/campaigns/${this.props.address}`)
 
         } catch (err) {
-
+            this.setState({errorMessage: err.message});
         }
 
-
+        this.setState({loading: false, errorMessage: ''});
 
     };
 
     render() {
         return (
-            < Form onSubmit={this.onSubmit}>
+            < Form onSubmit={this.onSubmit} error={!!this.state.errorMessage}>
                 <Form.Field>
                     <label>Amount to Contribute</label>
                     <Input value={this.state.value} label="ether" labelPosition='right'
                         onChange={event => this.setState({ value: event.target.value })} />
                 </Form.Field>
 
-                <Button primary>Contribute!</Button>
+                <Message error header="Oops!" content={this.state.errorMessage} />
+                <Button loading={this.state.loading} primary >Contribute!</Button>
 
             </Form >
         );
