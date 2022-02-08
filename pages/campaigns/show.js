@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { Card } from 'semantic-ui-react';
+import { Card, Grid } from 'semantic-ui-react';
 import Layout from '../../components/Layout';
 import Campaign from '../../ethereum/campaign';
 import web3 from '../../ethereum/web3';
+import ContributeForm from '../../components/ContributeForm';
 
 
 class CampaignShow extends Component {
@@ -14,7 +15,7 @@ class CampaignShow extends Component {
 
         console.log(summary);
         return {
-
+            address: props.query.address,
             minimumContribution: summary[0],
             balance: summary[1],
             requestCount: summary[2],
@@ -59,8 +60,8 @@ class CampaignShow extends Component {
         },
 
         {
-            header: web3.utils.fromWei(balance,'ether'),
-            meta: 'Campaign Balance (ethere)',
+            header: web3.utils.fromWei(balance, 'ether'),
+            meta: 'Campaign Balance (ether)',
             description: 'The balance is how much money this campaign has left to spend.'
         }
 
@@ -72,8 +73,18 @@ class CampaignShow extends Component {
     render() {
         return (
             <Layout>
-                <h3>Welcome to the show page!!!</h3>
-                {this.rendersCards()}
+                <h3>Campaign Details</h3>
+                <Grid>
+                    <Grid.Column width={10}>
+                        {this.rendersCards()}
+                    </Grid.Column>
+
+                    <Grid.Column width={6}>
+                        <ContributeForm address={this.props.address} />
+                    </Grid.Column>
+
+                </Grid>
+
             </Layout>
         );
     }
